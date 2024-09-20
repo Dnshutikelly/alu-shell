@@ -1,2 +1,2 @@
 #!/bin/bash
-This script prints a simple message
+This script prints a simple messagie
