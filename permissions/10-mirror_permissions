@@ -1,6 +1,2 @@
 #!/bin/bash
-if [ -e olleh ]; then
-    chmod --reference=olleh hello
-else
-    echo "Error: The file 'olleh' does not exist."
-fi
+chmod --reference=olleh hello
