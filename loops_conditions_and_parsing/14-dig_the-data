@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# This script parses an Apache log file, groups by IP and HTTP status code, and sorts by occurrences
 
-# Parse and group by IP and HTTP status code, then count occurrences
-awk '{print $1, $9}' apache-access.log | sort | uniq -c | sort -nr
+# Check if the file exists and is not empty
+if [ ! -s apache-access.log ]; then
+    echo "The log file is either missing or empty."
+    exit 1
+fi
+
+# Use awk to extract and group data, then sort by the number of occurrences
+awk '{if ($9 ~ /^[0-9]{3}$/) print $1, $9}' apache-access.log | sort | uniq -c | sort -nr
