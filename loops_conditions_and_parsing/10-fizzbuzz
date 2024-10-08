@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# This script displays numbers from 1 to 100 with FizzBuzz logic
+
+# Loop through numbers from 1 to 100
+for number in {1..100}
+do
+  # Check if the number is divisible by both 3 and 5 (FizzBuzz)
+  if (( number % 3 == 0 && number % 5 == 0 )); then
+    echo "FizzBuzz"
+  # Check if the number is divisible by 3 (Fizz)
+  elif (( number % 3 == 0 )); then
+    echo "Fizz"
+  # Check if the number is divisible by 5 (Buzz)
+  elif (( number % 5 == 0 )); then
+    echo "Buzz"
+  # If none of the above, display the number
+  else
+    echo "$number"
+  fi
+done
