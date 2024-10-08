@@ -1,0 +1,16 @@
+#!/bin/bash
+# Initialize a counter variable
+i=1
+
+# Start the while loop
+while [ $i -le 10 ]
+do
+  if [ $i -eq 9 ]
+  then
+    echo "Best School"
+    echo "Hi"
+  else
+    echo "Best School"
+  fi
+  i=$((i+1))  # Increment the counter
+done
