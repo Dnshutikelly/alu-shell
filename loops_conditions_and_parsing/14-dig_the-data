@@ -17,10 +17,23 @@ fi
 
 # Check if the log file is in the expected format
 # Expecting at least 9 fields for a valid log entry
-if ! awk 'NF < 9 {print "The log file is in the wrong format."; exit 1}' "$log_file"; then
+# For a wrong format log file, we can check if each line contains a proper number of fields
+# Here, we assume the standard Apache log format has at least 9 fields
+wrong_format=false
+while read -r line; do
+    # Count the number of fields in the line
+    num_fields=$(echo "$line" | awk '{print NF}')
+    if (( num_fields < 9 )); then
+        wrong_format=true
+        break
+    fi
+done < "$log_file"
+
+if $wrong_format; then
     echo "The log file is in the wrong format."
     exit 1
 fi
 
 # Parse the log file and group by IP and HTTP status code
 awk '{print $1, $9}' "$log_file" | awk '{count[$1, $2]++} END {for (i in count) print count[i], i}' | sort -nr
+
