@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Parse and group by IP and HTTP status code, then count occurrences
+awk '{print $1, $9}' apache-access.log | sort | uniq -c | sort -nr
