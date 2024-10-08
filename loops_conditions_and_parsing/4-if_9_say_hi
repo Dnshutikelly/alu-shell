@@ -1,11 +1,12 @@
-#!/bin/bash
-# Initialize a counter variable
-i=1
+#!/usr/bin/env bash
+# This script displays 'Best School' 10 times, but 'Hi' is added on the 9th iteration
+
+i=1  # Initialize counter
 
 # Start the while loop
-while [ $i -le 10 ]
+while [ "$i" -le 10 ]
 do
-  if [ $i -eq 9 ]
+  if [ "$i" -eq 9 ]
   then
     echo "Best School"
     echo "Hi"
