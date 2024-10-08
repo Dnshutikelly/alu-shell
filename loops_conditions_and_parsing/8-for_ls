@@ -2,16 +2,18 @@
 # This script lists the content of the current directory and displays only the part after the first dash
 
 # Use a for loop to iterate through all files (excluding hidden files)
-for file in $(ls | grep -v "^\.")
+for file in *  # '*' matches all non-hidden files
 do
-  # Check if the filename contains a dash
-  if [[ "$file" == *-* ]]
-  then
-    # Use cut to display the part after the first dash
-    echo "$file" | cut -d '-' -f 2-
-  else
-    # If there's no dash, display the full name
-    echo "$file"
+  # Ensure we're only processing files that exist
+  if [ -f "$file" ]; then
+    # Check if the filename contains a dash
+    if [[ "$file" == *-* ]]
+    then
+      # Use cut to display the part after the first dash
+      echo "${file#*-}"
+    else
+      # If there's no dash, display the full name
+      echo "$file"
+    fi
   fi
 done
-
