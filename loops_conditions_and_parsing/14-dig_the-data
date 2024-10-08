@@ -1,25 +1,26 @@
 #!/usr/bin/env bash
-# This script parses an Apache log file, groups by IP and HTTP status code, and sorts by occurrences
+# This script parses Apache logs and groups visitors by IP and HTTP status code
 
-LOG_FILE="apache-access.log"
+log_file="apache-access.log"
 
 # Check if the log file exists
-if [ ! -f "$LOG_FILE" ]; then
+if [[ ! -f $log_file ]]; then
     echo "The log file is missing."
     exit 1
 fi
 
 # Check if the log file is empty
-if [ ! -s "$LOG_FILE" ]; then
+if [[ ! -s $log_file ]]; then
     echo "The log file is empty."
-    exit 0
+    exit 1
 fi
 
-# Check if the log file has a correct format
-if ! awk 'NR==1 {exit ($0 !~ /^[^ ]+ [^ ]+ [^ ]+$/)}' "$LOG_FILE"; then
+# Check if the log file is in the expected format
+# Expecting at least 9 fields for a valid log entry
+if ! awk 'NF < 9 {print "The log file is in the wrong format."; exit 1}' "$log_file"; then
     echo "The log file is in the wrong format."
     exit 1
 fi
 
-# Use awk to extract and group data, then sort by the number of occurrences
-awk '{if ($9 ~ /^[0-9]{3}$/) print $1, $9}' "$LOG_FILE" | sort | uniq -c | sort -nr
+# Parse the log file and group by IP and HTTP status code
+awk '{print $1, $9}' "$log_file" | awk '{count[$1, $2]++} END {for (i in count) print count[i], i}' | sort -nr
