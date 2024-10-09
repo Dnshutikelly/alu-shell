@@ -1,0 +1,7 @@
+#!/bin/bash
+# manage_my_process: Write "I am alive!" to /tmp/my_process indefinitely
+
+while true; do
+  echo "I am alive!" >> /tmp/my_process
+  sleep 2
+done
