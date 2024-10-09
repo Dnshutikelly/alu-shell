@@ -1,33 +1,48 @@
 #!/usr/bin/env bash
-# manage_my_process script
+# 11-manage_my_process: Manage the manage_my_process script
 
-                                                  
-start () {                                         
-    ./manage_my_process &                          
-    echo $! > /var/run/my_process.pid              
-    echo "manage_my_process started"               
-}                                                  
-                                                   
-stop () {                                          
-    pkill -f "./manage_my_process"                 
-    rm /var/run/my_process.pid                     
-    echo "manage_my_process stopped"               
-}                                                  
-                                                   
-restart () {                                       
-    pkill -f "./manage_my_process"                 
-    rm /var/run/my_process.pid                     
-    ./manage_my_process &                          
-    echo $! >> /var/run/my_process.pid             
-    echo "manage_my_process restarted"             
-}
-case "$1" in                                       
-   start) start ;;                                 
-   stop)  stop;;                                   
-   restart) restart;;                              
-   *) echo "Usage: manage_my_process {start|stop|r\
-estart}"                                           
-                                                   
-      ;;                                           
-esac                                               
-                                         
+PID_FILE="/var/run/my_process.pid"
+MANAGE_MY_PROCESS="/path/to/manage_my_process"  # Replace with the full path to manage_my_process
+
+case "$1" in
+  start)
+    if [ -f "$PID_FILE" ]; then
+      if ps -p "$(cat $PID_FILE)" > /dev/null 2>&1; then
+        echo "manage_my_process is already running"
+      else
+        # Remove stale PID file and start process with the full path to avoid 'bash' confusion
+        rm "$PID_FILE"
+        /bin/bash "$MANAGE_MY_PROCESS" &
+        echo $! > "$PID_FILE"
+        echo "manage_my_process started"
+      fi
+    else
+      # Start the process if no PID file exists
+      /bin/bash "$MANAGE_MY_PROCESS" &
+      echo $! > "$PID_FILE"
+      echo "manage_my_process started"
+    fi
+    ;;
+  stop)
+    if [ -f "$PID_FILE" ]; then
+      kill "$(cat $PID_FILE)"
+      rm "$PID_FILE"
+      echo "manage_my_process stopped"
+    else
+      echo "manage_my_process is not running"
+    fi
+    ;;
+  restart)
+    if [ -f "$PID_FILE" ]; then
+      kill "$(cat $PID_FILE)"
+      rm "$PID_FILE"
+      echo "manage_my_process stopped"
+    fi
+    /bin/bash "$MANAGE_MY_PROCESS" &
+    echo $! > "$PID_FILE"
+    echo "manage_my_process restarted"
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    ;;
+esac  
